@@ -1,6 +1,6 @@
 # Python Demo (free Presian text analytics APIs)
 
-You are welcome to inspect [the source of this project](../blob/master/python-demo/python_demo.py) to use [Persian text mining API's](https://api.text-mining.ir/) in python.
+You are welcome to inspect [the source of this project](../master/python-demo/python_demo.py) to use [Persian text mining API's](https://api.text-mining.ir/) in python.
 
 
 ## Installation
@@ -13,7 +13,7 @@ pip install json
 
 ## Usage Tips
 
-Please, replace "YOUR_API_KEY" with your real API key (in line 35 from the "python_demo.py"(../blob/master/python-demo/python_demo.py) file):
+Please, replace "YOUR_API_KEY" with your real API key (in line 35 from the "python_demo.py"(../master/python-demo/python_demo.py) file):
 
 ```python
 35.  querystring = {"apikey":"YOUR_API_KEY"}
