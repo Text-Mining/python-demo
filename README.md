@@ -13,7 +13,7 @@ pip install json
 
 ## Usage Tips
 
-Please, replace "YOUR_API_KEY" with your real API key (in line 35 from the "python_demo.py"(../master/python-demo/python_demo.py) file):
+Please, replace "YOUR_API_KEY" with your real API key (in line 35 from the ["python_demo.py"](../master/python-demo/python_demo.py) file):
 
 ```python
 35.  querystring = {"apikey":"YOUR_API_KEY"}
