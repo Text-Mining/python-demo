@@ -21,7 +21,8 @@ Please, replace "YOUR_API_KEY" with your real API key (in line 35 from the ["pyt
 
 Please, refer to [Text-Mining Developer Panel](https://app.text-mining.ir) for getting free API key.
 
-> For more information, please visit our website at [text-mining.ir](https://text-mining.ir "Persian Text Mining Services")
+> For more information, please visit online documentation at [docs.text-mining.ir](https://docs.text-mining.ir/ "Persian Text Mining Documentation")
+
 ---
 
-> [سرویس تحلیل متن (متن کاوی) فارسی رایگان](https://text-mining.ir)
+> [سرویس تحلیل متن (متن کاوی) فارسی رایگان](https://text-mining.ir "ابزارهای پردازش متن برای زبان فارسی")
