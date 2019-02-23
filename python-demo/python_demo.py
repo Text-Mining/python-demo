@@ -25,8 +25,8 @@ def callApi(url, data, tokenKey):
         'Authorization': "Bearer " + tokenKey,
         'Cache-Control': "no-cache"
     }
-    response = requests.request("POST", url, data=data, headers=headers)
-    return response.text.encode("utf-8")
+    response = requests.request("POST", url, data=data.encode("utf-8"), headers=headers)
+    return response.text
     # return utfReverse(response.text.encode("utf-8"))
     
 ##################### Get Token by Api Key ##########################
@@ -39,17 +39,17 @@ tokenKey = data['token']
 
 ######################## Call Normalizer ############################
 url =  baseUrl + "PreProcessing/NormalizePersianWord"
-payload = "{\"text\":\"تست ها\", \"refineSeparatedAffix\":true}"
+payload = u"{\"text\":\"ولــے اگــر دڪــمــه مــڪــث رو لــمــس ڪــنــیــم ڪــلــا مــتــن چــنــدیــن صــفــحــه جــابــه جــا مــیــشــه و دیــگــه نــمــیــشــه فــهمــیــد ڪــدوم آیــه تــلــاوت مــی شود بــایــد چــے ڪــنــیــم؟.\", \"refineSeparatedAffix\":true}"
 print(callApi(url, payload, tokenKey))
 
 ######################## Call Tokenizer ############################
 url =  baseUrl + "PreProcessing/Tokenize"
-payload = "\"من با دانشجویان دیگری برخورد کردم\""
+payload = u"\"من با دانشجویان دیگری برخورد کردم\""
 print(callApi(url, payload, tokenKey))
 
 ############# Call Sentence Splitter and Tokenizer #################
 url =  baseUrl + "PreProcessing/SentenceSplitterAndTokenize"
-payload = '''{\"text\": \"من با دانشجویان دیگری برخورد کردم. سپس به آنها گفتم\nمن با شما کارهای زیادی دارم\",
+payload = u'''{\"text\": \"من با دوستم به مدرسه می رفتیم و در آنجا مشغول به تحصیل بودیم. سپس به دانشگاه راه یافتیم\",
     \"checkSlang\": true, 
     \"normalize\": true, 
     \"normalizerParams\": {
@@ -59,18 +59,18 @@ payload = '''{\"text\": \"من با دانشجویان دیگری برخورد �
         \"refineSeparatedAffix\": true,
         \"refineQuotationPunc\": false
     },
-    \"complexSentence\": false
+    \"complexSentence\": true
 }'''
 print(callApi(url, payload, tokenKey))
 
 ########################## Call Stemmer ##########################
 url =  baseUrl + "Stemmer/LemmatizeText2Text"
-payload = '"من با دانشجویان دیگری برخورد کردم. سپس به آنها گفتم\nمن با شما کارهای زیادی دارم"'
-print(callApi(url, payload, tokenKey))
+payload = u'"من با دانشجویان دیگری برخورد کردم. سپس به آنها گفتم\nمن با شما کارهای زیادی دارم"'
+#print(callApi(url, payload, tokenKey))
 
 #################### Call Spell Corrector ########################
 url =  baseUrl + "TextRefinement/SpellCorrector"
-payload = '''{\"text\": \"فهوه با مبات میجسبد\",
+payload = u'''{\"text\": \"فهوه با مبات میجسبد\",
             \"checkSlang\": true, 
             \"normalize\": true, 
             \"candidateCount\": 2}'''
@@ -78,16 +78,30 @@ print(callApi(url, payload, tokenKey))
 
 ################## Call Swear Word Detector ######################
 url =  baseUrl + "TextRefinement/SwearWordTagger"
-payload = '\"خـــــــرررررهای دیووووونههه  -   صکس  س.ک.س ی  \r\n بیپدرومادر\"'
+payload = u'"خـــــــرررررهای دیووووونههه  -   صکس  س.ک.س ی  \r\n بیپدرومادر"'
 result = json.loads(callApi(url, payload, tokenKey))
 ## for item in result: ...
 print(result)
 
 ################ Call Slang to Formal Converter ##################
 url =  baseUrl + "TextRefinement/FormalConverter"
-payload = '''"اگه اون گزینه رو کلیک کنین، یه پنجره باز میشه که میتونین رمز عبورتون رو اونجا تغییر بدین
+payload = u'''"اگه اون گزینه رو کلیک کنین، یه پنجره باز میشه که میتونین رمز عبورتون رو اونجا تغییر بدین
     داشتم مي رفتم برم، ديدم گرفت نشست، گفتم بذار بپرسم ببينم مياد نمياد ديدم ميگه نميخوام بيام بذار برم بگيرم بخوابم نمیتونم بشینم.
     کتابای خودتونه
     نمیدونم چی بگم که دیگه اونجا نره
     ساعت چن میتونین بیایین؟"'''
 print(callApi(url, payload, tokenKey))
+
+######################## Call POS-Tagger ############################
+url =  baseUrl + "PosTagger/GetPos"
+payload = u'"احمد و علی به مدرسه پایین خیابان می رفتند"'
+result = json.loads(callApi(url, payload, tokenKey))
+for phrase in result:
+    print("("+phrase['word']+","+phrase['tags']['POS']['item1']+") ")
+
+############################ Call NER ###############################
+url =  baseUrl + "NamedEntityRecognition/Detect"
+payload = u'"احمد عباسی به تحصیلات خود در دانشگاه آزاد اسلامی در مشهد ادامه داد"'
+result = json.loads(callApi(url, payload, tokenKey))
+for phrase in result:
+    print("("+phrase['word']+","+phrase['tags']['NER']['item1']+") ")
