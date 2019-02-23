@@ -66,7 +66,7 @@ print(callApi(url, payload, tokenKey))
 ########################## Call Stemmer ##########################
 url =  baseUrl + "Stemmer/LemmatizeText2Text"
 payload = u'"من با دانشجویان دیگری برخورد کردم. سپس به آنها گفتم\nمن با شما کارهای زیادی دارم"'
-#print(callApi(url, payload, tokenKey))
+print(callApi(url, payload, tokenKey))
 
 #################### Call Spell Corrector ########################
 url =  baseUrl + "TextRefinement/SpellCorrector"
@@ -105,3 +105,8 @@ payload = u'"احمد عباسی به تحصیلات خود در دانشگاه 
 result = json.loads(callApi(url, payload, tokenKey))
 for phrase in result:
     print("("+phrase['word']+","+phrase['tags']['NER']['item1']+") ")
+
+##################### Call Language Detection #######################
+url =  baseUrl + "LanguageDetection/Predict"
+payload = u'"شام ییبسن یا یوخ. سن سیز بوغازیمنان گتمیر شام. به به نه قشه یردی. ساغ اول سیز نئجه سیز. نئجه سن؟ اوشاقلار نئجه دیر؟ سلام لاری وار سیزین کی لر نئجه دیر. یاخچی"'
+print(callApi(url, payload, tokenKey))
