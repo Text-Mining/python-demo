@@ -32,14 +32,34 @@ def callApi(url, data, tokenKey):
 ##################### Get Token by Api Key ##########################
 baseUrl = "http://api.text-mining.ir/api/"
 url = baseUrl + "Token/GetToken"
-querystring = {"apikey":"YOUR_API_KEY"}
+querystring = {"apikey":"06c1ff5f-3a46-e911-bf68-fba4cb78af4b"}
 response = requests.request("GET", url, params=querystring)
 data = json.loads(response.text)
 tokenKey = data['token']
 
+
+url =  baseUrl + "Stemmer/LemmatizeWords2Phrase"
+payload = u'["مشاجرات", "دریانوردانی", "جزایر", "فرشتگان", "تنها"]'
+result = json.loads(callApi(url, payload, tokenKey))
+for phrase in result:
+    print("("+phrase['word']+":"+phrase['firstRoot']+") ")
+
 ######################## Call Normalizer ############################
 url =  baseUrl + "PreProcessing/NormalizePersianWord"
 payload = u"{\"text\":\"ولــے اگــر دڪــمــه مــڪــث رو لــمــس ڪــنــیــم ڪــلــا مــتــن چــنــدیــن صــفــحــه جــابــه جــا مــیــشــه و دیــگــه نــمــیــشــه فــهمــیــد ڪــدوم آیــه تــلــاوت مــی شود بــایــد چــے ڪــنــیــم؟.\", \"refineSeparatedAffix\":true}"
+print(callApi(url, payload, tokenKey))
+
+##################### Call Sentence Splitter ########################
+url =  baseUrl + "PreProcessing/SentenceSplitter"
+payload = u'''{\"text\": \"من با دوستم به مدرسه می رفتیم و در آنجا مشغول به تحصیل بودیم. سپس به دانشگاه راه یافتیم\",
+    \"checkSlang\": true, 
+    \"normalize\": true, 
+    \"normalizerParams\": {
+        \"text\": \"don't care\",
+        \"RefineQuotationPunc \": false
+    },
+    \"complexSentence\": true
+}'''
 print(callApi(url, payload, tokenKey))
 
 ######################## Call Tokenizer ############################
@@ -68,12 +88,38 @@ url =  baseUrl + "Stemmer/LemmatizeText2Text"
 payload = u'"من با دانشجویان دیگری برخورد کردم. سپس به آنها گفتم\nمن با شما کارهای زیادی دارم"'
 print(callApi(url, payload, tokenKey))
 
+########################## Call Stemmer ##########################
+url =  baseUrl + "Stemmer/LemmatizePhrase2Phrase"
+payload = u'{"phrases": [{ "word": "دریانوردانی" }, { "word": "فرشتگان" }], "checkSlang": false}'
+print(callApi(url, payload, tokenKey))
+
+########################## Call Stemmer ##########################
+url =  baseUrl + "Stemmer/LemmatizeText2Phrase"
+payload = u'{"text": "دانشجویان زیادی به مدارس استعدادهای درخشان راه پیدا نخواهند کرد که با مشکلات بعدی مواجه شوند.", "checkSlang": false}'
+result = json.loads(callApi(url, payload, tokenKey))
+for phrase in result:
+    print("("+phrase['word']+":"+phrase['firstRoot']+") ")
+
+########################## Call Stemmer ##########################
+url =  baseUrl + "Stemmer/LemmatizeWords2Phrase"
+payload = u'["دریانوردانی", "جزایر", "فرشتگان", "تنها"]'
+result = json.loads(callApi(url, payload, tokenKey))
+for phrase in result:
+    print("("+phrase['word']+":"+phrase['firstRoot']+") ")
+
 #################### Call Spell Corrector ########################
 url =  baseUrl + "TextRefinement/SpellCorrector"
 payload = u'''{\"text\": \"فهوه با مبات میجسبد\",
             \"checkSlang\": true, 
             \"normalize\": true, 
             \"candidateCount\": 2}'''
+print(callApi(url, payload, tokenKey))
+
+################ Call Spell Corrector in Context ##################
+url =  baseUrl + "TextRefinement/SpellCorrectorInContext"
+payload = u'''{\"text\": \"ستر حیوانی است که در صحرا با مقدار کم آب زندگی میکند\",
+            \"normalize\": true, 
+            \"candidateCount\": 3}'''
 print(callApi(url, payload, tokenKey))
 
 ################## Call Swear Word Detector ######################
