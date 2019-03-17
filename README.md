@@ -25,4 +25,4 @@ Please, refer to [Text-Mining Developer Panel](https://app.text-mining.ir) for g
 
 ---
 
-> [سرویس تحلیل متن (متن کاوی) فارسی رایگان](https://text-mining.ir "ابزارهای پردازش متن برای زبان فارسی")
+> [سرویس تحلیل متن (متن کاوی) فارسی‌یار](https://text-mining.ir "ابزارهای پردازش متن برای زبان فارسی")
