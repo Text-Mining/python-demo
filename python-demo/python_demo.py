@@ -32,17 +32,10 @@ def callApi(url, data, tokenKey):
 ##################### Get Token by Api Key ##########################
 baseUrl = "http://api.text-mining.ir/api/"
 url = baseUrl + "Token/GetToken"
-querystring = {"apikey":"06c1ff5f-3a46-e911-bf68-fba4cb78af4b"}
+querystring = {"apikey":"YOUR_API_KEY"}
 response = requests.request("GET", url, params=querystring)
 data = json.loads(response.text)
 tokenKey = data['token']
-
-
-url =  baseUrl + "Stemmer/LemmatizeWords2Phrase"
-payload = u'["مشاجرات", "دریانوردانی", "جزایر", "فرشتگان", "تنها"]'
-result = json.loads(callApi(url, payload, tokenKey))
-for phrase in result:
-    print("("+phrase['word']+":"+phrase['firstRoot']+") ")
 
 ######################## Call Normalizer ############################
 url =  baseUrl + "PreProcessing/NormalizePersianWord"
@@ -88,19 +81,16 @@ url =  baseUrl + "Stemmer/LemmatizeText2Text"
 payload = u'"من با دانشجویان دیگری برخورد کردم. سپس به آنها گفتم\nمن با شما کارهای زیادی دارم"'
 print(callApi(url, payload, tokenKey))
 
-########################## Call Stemmer ##########################
 url =  baseUrl + "Stemmer/LemmatizePhrase2Phrase"
 payload = u'{"phrases": [{ "word": "دریانوردانی" }, { "word": "فرشتگان" }], "checkSlang": false}'
 print(callApi(url, payload, tokenKey))
 
-########################## Call Stemmer ##########################
 url =  baseUrl + "Stemmer/LemmatizeText2Phrase"
 payload = u'{"text": "دانشجویان زیادی به مدارس استعدادهای درخشان راه پیدا نخواهند کرد که با مشکلات بعدی مواجه شوند.", "checkSlang": false}'
 result = json.loads(callApi(url, payload, tokenKey))
 for phrase in result:
     print("("+phrase['word']+":"+phrase['firstRoot']+") ")
 
-########################## Call Stemmer ##########################
 url =  baseUrl + "Stemmer/LemmatizeWords2Phrase"
 payload = u'["دریانوردانی", "جزایر", "فرشتگان", "تنها"]'
 result = json.loads(callApi(url, payload, tokenKey))
@@ -155,4 +145,47 @@ for phrase in result:
 ##################### Call Language Detection #######################
 url =  baseUrl + "LanguageDetection/Predict"
 payload = u'"شام ییبسن یا یوخ. سن سیز بوغازیمنان گتمیر شام. به به نه قشه یردی. ساغ اول سیز نئجه سیز. نئجه سن؟ اوشاقلار نئجه دیر؟ سلام لاری وار سیزین کی لر نئجه دیر. یاخچی"'
+print(callApi(url, payload, tokenKey))
+
+################## Call Sentiment Classification ####################
+url =  baseUrl + "SentimentAnalyzer/SentimentClassifier"
+payload = u"\"اصلا خوب نبود\""
+print(callApi(url, payload, tokenKey))
+
+###################### Call Text Similarity #########################
+url =  baseUrl + "TextSimilarity/ExtractSynonyms"
+payload = u"\"احسان\""
+print(callApi(url, payload, tokenKey))
+
+url =  baseUrl + "TextSimilarity/GetSyntacticDistance"
+payload = u'{"string1": "ایرانی ها", "string2": "ایرانیان", "distanceFunc": 2}'  # JaccardDistance
+print(callApi(url, payload, tokenKey))
+
+url =  baseUrl + "TextSimilarity/SentenceSimilarityBipartiteMatching"
+payload = u'''{
+    "string1": "حمله مغولها به ایران", 
+    "string2": "حملات مغولان به ایران", 
+    "distanceFunc": 2}'''  # JaccardDistance
+print(callApi(url, payload, tokenKey))
+
+url =  baseUrl + "TextSimilarity/SentenceSimilarityWithIntersectionMatching"
+payload = u'''{
+    "string1": "حمله مغولها به ایران", 
+    "string2": "حملات مغولان به ایران", 
+    "distanceFunc": 2,
+    "minDistThreshold": 0.3}'''  # حداقل فاصله دو کلمه برای انطباق (یکسان فرض نمودن) آنها
+print(callApi(url, payload, tokenKey))
+
+url =  baseUrl + "TextSimilarity/SentenceSimilarityWithNGramMatching"
+payload = u'''{
+    "string1": "حمله مغولها به ایران", 
+    "string2": "حملات مغولان به ایران", 
+    "distanceFunc": 2,
+    "minDistThreshold": 0.3}'''  # حداقل فاصله دو کلمه برای انطباق (یکسان فرض نمودن) آنها
+print(callApi(url, payload, tokenKey))
+
+url =  baseUrl + "TextSimilarity/SentenceSimilarityWithNearDuplicateDetector"
+payload = u'''{
+    "string1": "حمله مغولها به ایران", 
+    "string2": "حملات مغولان به ایران"}'''
 print(callApi(url, payload, tokenKey))
