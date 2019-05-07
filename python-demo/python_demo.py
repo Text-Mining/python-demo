@@ -32,7 +32,7 @@ def callApi(url, data, tokenKey):
 ##################### Get Token by Api Key ##########################
 baseUrl = "http://api.text-mining.ir/api/"
 url = baseUrl + "Token/GetToken"
-querystring = {"apikey":"e2ab6cb2-c068-e911-bf68-fba4cb78af4b"} # "YOUR_API_KEY"
+querystring = {"apikey":"YOUR_API_KEY"} 
 response = requests.request("GET", url, params=querystring)
 data = json.loads(response.text)
 tokenKey = data['token']
