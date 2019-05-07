@@ -32,7 +32,7 @@ def callApi(url, data, tokenKey):
 ##################### Get Token by Api Key ##########################
 baseUrl = "http://api.text-mining.ir/api/"
 url = baseUrl + "Token/GetToken"
-querystring = {"apikey":"YOUR_API_KEY"}
+querystring = {"apikey":"e2ab6cb2-c068-e911-bf68-fba4cb78af4b"} # "YOUR_API_KEY"
 response = requests.request("GET", url, params=querystring)
 data = json.loads(response.text)
 tokenKey = data['token']
@@ -188,4 +188,18 @@ url =  baseUrl + "TextSimilarity/SentenceSimilarityWithNearDuplicateDetector"
 payload = u'''{
     "string1": "حمله مغولها به ایران", 
     "string2": "حملات مغولان به ایران"}'''
+print(callApi(url, payload, tokenKey))
+
+################ Call Information Retrieval Function(s) ##################
+url =  baseUrl + "InformationRetrieval/KeywordExtraction"
+payload = u'''{
+    "text": "سرمایه گذاری هنگفت امارات در توسعه انرژی
+امارات در مناطق شمالی این کشور بیش از ۷۰۰ میلیون درهم در توسعه انرژی سرمایه گذاری می‌کند.
+محمد صالح مدیرکل اداره برق امارات در نشست خبری اعلام کرد که امارات متحده عربی از امسال تا سال ۲۰۲۲ میلادی ۸ پروژه مهم انرژی به منظور توسعه و گسترش برق مناطق شمالی امارات اجرا خواهد کرد.
+وی افزود: این طرح‌ها با هزینه‌ای بالغ بر ۷۰۰ میلیون درهم احداث و تکمیل خواهد شد.", 
+    "minWordLength": 3,
+    "maxWordCount": 3,
+    "minKeywordFrequency": 1,
+    "resultKeywordCount": 5,
+    "method": "TFIDF"}'''
 print(callApi(url, payload, tokenKey))
