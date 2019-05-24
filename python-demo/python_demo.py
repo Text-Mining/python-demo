@@ -32,7 +32,7 @@ def callApi(url, data, tokenKey):
 ##################### Get Token by Api Key ##########################
 baseUrl = "http://api.text-mining.ir/api/"
 url = baseUrl + "Token/GetToken"
-querystring = {"apikey":"YOUR_API_KEY"} 
+querystring = {"apikey":"YOUR_API_KEY"}
 response = requests.request("GET", url, params=querystring)
 data = json.loads(response.text)
 tokenKey = data['token']
@@ -59,6 +59,11 @@ print(callApi(url, payload, tokenKey))
 url =  baseUrl + "PreProcessing/Tokenize"
 payload = u"\"من با دانشجویان دیگری برخورد کردم\""
 print(callApi(url, payload, tokenKey))
+
+url =  baseUrl + "PreProcessing/TokenizeWithType"
+payload = u"\"اخبار 20:30 مورخ 1398/2/22 اعلام کرد شرکت T.E.T مبلغ 200.57 میلیون ارزش دارد!!!  😒 @Khabar_Alaki -- email: hi@text-mining.ir\""
+print(callApi(url, payload, tokenKey))
+#result: [{"key":"اخبار","value":"Word"},{"key":"20:30 ","value":"DateTime"},{"key":"مورخ","value":"Word"},{"key":"1398/2/22","value":"DateTime"},{"key":"اعلام","value":"Word"},{"key":"کرد","value":"Word"},{"key":"شرکت","value":"Word"},{"key":"T.E.T","value":"Abbreviation"},{"key":"مبلغ","value":"Word"},{"key":"200.57","value":"Number"},{"key":"میلیون","value":"Word"},{"key":"ارزش","value":"Word"},{"key":"دارد","value":"Word"},{"key":"!!!","value":"Separator"},{"key":"😒","value":"Emoji"},{"key":"@Khabar_Alaki","value":"SocialId"},{"key":"--","value":"Separator"},{"key":"email","value":"Word"},{"key":":","value":"Separator"},{"key":"hi@text-mining.ir","value":"Email"}]
 
 ############# Call Sentence Splitter and Tokenizer #################
 url =  baseUrl + "PreProcessing/SentenceSplitterAndTokenize"
@@ -203,3 +208,8 @@ payload = u'''{
     "resultKeywordCount": 5,
     "method": "TFIDF"}'''
 print(callApi(url, payload, tokenKey))
+
+url =  baseUrl + "InformationRetrieval/StopWordRemoval"
+payload = u'''"تیم متن کاوی فارسی‌یار با مجموعه‌ای از فارغ التحصیلان دانشگاه‌های صنعتی شریف، تربیت مدرس و فردوسی مشهد از سال ۱۳۹۰ بصورت تخصصی در زمینه پردازش زبان طبیعی مشغول به فعالیت است. در سال ۱۳۹۶ در جهت فعالیت پژوهشی عمیق­‌تر در زمینه پردازش متون برای زبان فارسی، این گروه با آزمایشگاه متن کاوی و یادگیری ماشین پژوهشگاه علوم و فناوری اطلاعات ایران (ایرانداک) همکاری تنگاتنگی داشته است."'''
+print(callApi(url, payload, tokenKey))
+# result: تیم متن کاوی فارسی‌یار مجموعه‌ای فارغ التحصیلان دانشگاه‌های صنعتی شریف، تربیت مدرس فردوسی مشهد سال ۱۳۹۰ تخصصی پردازش زبان طبیعی مشغول فعالیت. سال ۱۳۹۶ فعالیت پژوهشی عمیق‌تر پردازش متون زبان فارسی، گروه آزمایشگاه متن کاوی یادگیری ماشین پژوهشگاه علوم فناوری اطلاعات ایران (ایرانداک) همکاری تنگاتنگی.
