@@ -232,10 +232,24 @@ payload = u"\"احسان\""
 print(callApi(url, payload, tokenKey))
 # result: ["احسان","نیکی کردن","نیکوکاری","بخشش","نیکی","خوبی","نیکویی","انعام","نکویی","اکرام","صنع","فضل","لطف","منت","نزل","نعمت","نیکی_کردن","احسان (نام)","احسان_(نام)"]
 
+url =  baseUrl + "TextSimilarity/GetMostSimilarWord"
+payload = u'''{
+    "word": "روحانی", 
+    "topN": "50"}'''
+print(callApi(url, payload, tokenKey))
+# result: ["دولت","آقای","احمدی‌نژاد","رئیس‌جمهور","رییس‌جمهور","انتخابات","برجام","اصلاحات","خاتمی","طلبان","حسن","ترامپ","مچکرررریم","استغفار_نمیکنید","جناب","هاشمی","جهانگیری","مردم","ریاست‌جمهوری","اقتصادی","انقلاب","اختلاف_سپاه_ارتش","مجلس","سخنان","حمایت","تدبیر","سیاسی","سخنرانی","اصلاح","اصولگرایان","ظریف","اقای","انتخاباتی","مسئولین","آمریکا","شورای","جمهوری","رفسنجانی","ملت","برخروشیده‌اند","دولت_غربگرا_و_سازشگر","رهبری","جامعه","گفته","مطرح","دکتر","مناظره_روحانی_با_خودش","اصلاح‌طلب","فرصت_بیشتری","ابقای_علی_اوسط_هاشمی"]
+
 url =  baseUrl + "TextSimilarity/GetSyntacticDistance"
 payload = u'{"string1": "ایرانی ها", "string2": "ایرانیان", "distanceFunc": 2}'  # JaccardDistance
 print(callApi(url, payload, tokenKey))
 # result: 0.333333343
+
+url =  baseUrl + "TextSimilarity/GetStatisticalDistance"
+payload = u'''{
+    "string1": "روحانی", 
+    "string2": "جسمانی"}'''
+print(callApi(url, payload, tokenKey))
+# result: 0.905992568
 
 url =  baseUrl + "TextSimilarity/SentenceSimilarityBipartiteMatching"
 payload = u'''{
