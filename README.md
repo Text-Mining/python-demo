@@ -4,7 +4,7 @@ You are welcome to inspect [the source of this project](../master/python-demo/py
 
 
 ## Installation
-This demo use Python 2.7. Use the package manager [pip](https://pip.pypa.io/en/stable/) to install [requests](https://pypi.org/project/requests/) and [json](https://docs.python.org/2/library/json.html) packages (if not already installed).
+This demo use Python 2.7 or 3.6. Use the package manager [pip](https://pip.pypa.io/en/stable/) to install [requests](https://pypi.org/project/requests/) and [json](https://docs.python.org/2/library/json.html) packages (if not already installed).
 
 ```bash
 pip install requests
