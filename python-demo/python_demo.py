@@ -222,7 +222,7 @@ print(callApi(url, payload, tokenKey))
 # result: azb
 
 ################## Call Sentiment Classification ####################
-url =  baseUrl + "SentimentAnalyzer/SentimentClassifier" # output:  0:Negative  1:Neutral  2:Positive
+url =  baseUrl + "SentimentAnalyzer/SentimentClassifier2" # output:  0:Negative  1:Neutral  2:Positive
 payload = u"\"اصلا خوب نبود\""
 print(callApi(url, payload, tokenKey)) 
 # result: 0
