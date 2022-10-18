@@ -15,6 +15,7 @@ def utfReverse(s):
 
 ######################################################################
 
+from trace import Trace
 import requests
 import json
 
@@ -25,8 +26,21 @@ def callApi(url, data, tokenKey):
         'Cache-Control': "no-cache"
     }
     response = requests.request("POST", url, data=data.encode("utf-8"), headers=headers)
-    return response.text    # return utfReverse(response.text.encode("utf-8"))
+    result = response.text  # utfReverse(response.text.encode("utf-8"))
+    response.close()
+    return result
     
+
+def callApiJsonParam(url, data, tokenKey):    
+    headers = {
+        'Authorization': "Bearer " + tokenKey,
+        'Cache-Control': "no-cache"
+    }
+    response = requests.request("POST", url, json=data, headers=headers)
+    result = response.text
+    response.close()
+    return result
+
 ##################### Get Token by Api Key ##########################
 baseUrl = "http://api.text-mining.ir/api/"
 url = baseUrl + "Token/GetToken"
@@ -40,54 +54,59 @@ url =  baseUrl + "PreProcessing/NormalizePersianWord"
 payload = json.dumps({"text":"ولــے اگــر دڪــمــه مــڪــث رو لــمــس ڪــنــیــم ڪــلــا مــتــن چــنــدیــن صــفــحــه جــابــه جــا مــیــشــه و دیــگــه نــمــیــشــه فــهمــیــد ڪــدوم آیــه تــلــاوت مــی شود بــایــد چــے ڪــنــیــم؟.", 
                       "refineSeparatedAffix":"true"}, ensure_ascii=False)
 print(callApi(url, payload, tokenKey))
+# or
+payload = {"text":"ولــے اگــر دڪــمــه مــڪــث رو لــمــس ڪــنــیــم ڪــلــا مــتــن چــنــدیــن صــفــحــه جــابــه جــا مــیــشــه و دیــگــه نــمــیــشــه فــهمــیــد ڪــدوم آیــه تــلــاوت مــی شود بــایــد چــے ڪــنــیــم؟.", 
+           "refineSeparatedAffix": True}
+print(callApiJsonParam(url, payload, tokenKey))
+
 # result: ولی اگر دکمه مکث رو لمس کنیم کلا متن چندین صفحه جابه جا میشه و دیگه نمیشه فهمید کدوم آیه تلاوت می‌شود باید چی کنیم؟.
 
 ##################### Call Sentence Splitter ########################
 url =  baseUrl + "PreProcessing/SentenceSplitter"
-payload = json.dumps({"text": "من با دوستم به مدرسه می رفتیم و در آنجا مشغول به تحصیل بودیم. سپس به دانشگاه راه یافتیم",
-    "checkSlang": "true",
-    "normalize": "true", 
+payload = {"text": "من با دوستم به مدرسه می رفتیم و در آنجا مشغول به تحصیل بودیم. سپس به دانشگاه راه یافتیم",
+    "checkSlang": True,
+    "normalize": True, 
     "normalizerParams": {
         "text": "don't care",
-        "RefineQuotationPunc": "false"
+        "RefineQuotationPunc": False
     },
-    "complexSentence": "true"
-}, ensure_ascii=False)
-print(callApi(url, payload, tokenKey))
+    "complexSentence": True
+}
+print(callApiJsonParam(url, payload, tokenKey))
 # resuilt: ["من با دوستم به مدرسه می‌رفتیم","و در آنجا مشغول به تحصیل بودیم .","سپس به دانشگاه راه یافتیم"
 
 ######################## Call Tokenizer ############################
 url =  baseUrl + "PreProcessing/Tokenize"
-payload = u"\"من با دانشجویان دیگری برخورد کردم\""
-print(callApi(url, payload, tokenKey))
+payload = "من با دانشجویان دیگری برخورد کردم"
+print(callApiJsonParam(url, payload, tokenKey))
 # rsult: ["من","با","دانشجویان","دیگری","برخورد","کردم"]
 
 url =  baseUrl + "PreProcessing/TokenizeWithType"
-payload = u"\"اخبار 20:30 مورخ 1398/2/22 اعلام کرد شرکت T.E.T مبلغ 200.57 میلیون ارزش دارد!!!  😒 @Khabar_Alaki -- email: hi@text-mining.ir\""
-print(callApi(url, payload, tokenKey))
+payload = "اخبار 20:30 مورخ 1398/2/22 اعلام کرد شرکت T.E.T مبلغ 200.57 میلیون ارزش دارد!!!  😒 @Khabar_Alaki -- email: hi@text-mining.ir"
+print(callApiJsonParam(url, payload, tokenKey))
 #result: [{"key":"اخبار","value":"Word"},{"key":"20:30 ","value":"DateTime"},{"key":"مورخ","value":"Word"},{"key":"1398/2/22","value":"DateTime"},{"key":"اعلام","value":"Word"},{"key":"کرد","value":"Word"},{"key":"شرکت","value":"Word"},{"key":"T.E.T","value":"Abbreviation"},{"key":"مبلغ","value":"Word"},{"key":"200.57","value":"Number"},{"key":"میلیون","value":"Word"},{"key":"ارزش","value":"Word"},{"key":"دارد","value":"Word"},{"key":"!!!","value":"Separator"},{"key":"😒","value":"Emoji"},{"key":"@Khabar_Alaki","value":"SocialId"},{"key":"--","value":"Separator"},{"key":"email","value":"Word"},{"key":":","value":"Separator"},{"key":"hi@text-mining.ir","value":"Email"}]
 
 ############# Call Sentence Splitter and Tokenizer #################
 url =  baseUrl + "PreProcessing/SentenceSplitterAndTokenize"
-payload = u'''{\"text\": \"من با دوستم به مدرسه می رفتیم و در آنجا مشغول به تحصیل بودیم. سپس به دانشگاه راه یافتیم\",
-    \"checkSlang\": true, 
-    \"normalize\": true, 
-    \"normalizerParams\": {
-        \"text\": \"don't care\",
-        \"replaceWildChar\": true,
-        \"replaceDigit\": true,
-        \"refineSeparatedAffix\": true,
-        \"refineQuotationPunc\": false
-    },
-    \"complexSentence\": true
-}'''
-print(callApi(url, payload, tokenKey))
+payload = {"text": "من با دوستم به مدرسه می رفتیم و در آنجا مشغول به تحصیل بودیم. سپس به دانشگاه راه یافتیم", 
+           "checkSlang": True, 
+           "normalize": True, 
+           "normalizerParams": {
+               "text": "don't care",
+               "replaceWildChar": True,
+                "replaceDigit": True,
+                "refineSeparatedAffix": True,
+                "refineQuotationPunc": False
+                },
+           "complexSentence": True
+           }
+print(callApiJsonParam(url, payload, tokenKey))
 # result: [["من","با","دوستم","به","مدرسه","می‌رفتیم"],["و","در","آنجا","مشغول","به","تحصیل","بودیم","."],["سپس","به","دانشگاه","راه","یافتیم"]]
 
 ########################## Call Stemmer ##########################
 url =  baseUrl + "Stemmer/LemmatizeText2Text"
-payload = u'"من با دانشجویان دیگری برخورد کردم. سپس به آنها گفتم\nمن با شما کارهای زیادی دارم"'
-print(callApi(url, payload, tokenKey))
+payload = "من با دانشجویان دیگری برخورد کردم. سپس به آنها گفتم\nمن با شما کارهای زیادی دارم"
+print(callApiJsonParam(url, payload, tokenKey))
 ''' result: 
 من با دانشجو دیگر بر خورد کرد. سپس به آن گفت
 من با شما کار زیاد داشت
@@ -102,7 +121,7 @@ url =  baseUrl + "Stemmer/LemmatizeText2Phrase"
 payload = u'{"text": "دانشجویان زیادی به مدارس استعدادهای درخشان راه پیدا نخواهند کرد که با مشکلات بعدی مواجه شوند.", "checkSlang": false}'
 result = json.loads(callApi(url, payload, tokenKey))
 for phrase in result:
-    print("("+phrase['word']+":"+phrase['firstRoot']+") ")
+    print(f"({phrase['Word']}:{phrase['FirstRoot']}) ")
 ''' result:
 (دانشجویان:دانشجو)
 (زیادی:زیاد)
@@ -126,7 +145,7 @@ url =  baseUrl + "Stemmer/LemmatizeWords2Phrase"
 payload = u'["دریانوردانی", "جزایر", "فرشتگان", "تنها"]'
 result = json.loads(callApi(url, payload, tokenKey))
 for phrase in result:
-    print("("+phrase['word']+":"+phrase['firstRoot']+") ")
+    print(f"({phrase['Word']}:{phrase['FirstRoot']}) ")
 ''' result:
 (دریانوردانی:دریانورد)
 (جزایر:جزیره)
@@ -161,12 +180,12 @@ print(result)
 
 ################ Call Slang to Formal Converter ##################
 url =  baseUrl + "TextRefinement/FormalConverter"
-payload = u'''"اگه اون گزینه رو کلیک کنین، یه پنجره باز میشه که میتونین رمز عبورتون رو اونجا تغییر بدین
+payload = u'''اگه اون گزینه رو کلیک کنین، یه پنجره باز میشه که میتونین رمز عبورتون رو اونجا تغییر بدین
     داشتم مي رفتم برم، ديدم گرفت نشست، گفتم بذار بپرسم ببينم مياد نمياد ديدم ميگه نميخوام بيام بذار برم بگيرم بخوابم نمیتونم بشینم.
     کتابای خودتونه
     نمیدونم چی بگم که دیگه اونجا نره
-    ساعت چن میتونین بیایین؟"'''
-print(callApi(url, payload, tokenKey))
+    ساعت چن میتونین بیایین؟'''
+print(callApiJsonParam(url, payload, tokenKey))
 ''' result:
 اگر آن گزینه را کلیک کنید، یک پنجره باز می‌شود که می‌توانید رمز عبورتان را آنجا تغییر بدهید
 داشتم می‌رفتم بروم، دیدم گرفت نشست، گفتم بگذار بپرسم ببینم می‌آید نمی‌آید دیدم می‌گوید نمی‌خواهم بیایم بگذار بروم بگیرم بخوابم نمی‌توانم بنشینم.
@@ -177,10 +196,10 @@ print(callApi(url, payload, tokenKey))
 
 ######################## Call POS-Tagger ############################
 url =  baseUrl + "PosTagger/GetPos"
-payload = u'"احمد و علی به مدرسه پایین خیابان می رفتند"'
-result = json.loads(callApi(url, payload, tokenKey))
+payload = u'احمد و علی به مدرسه پایین خیابان می رفتند'
+result = json.loads(callApiJsonParam(url, payload, tokenKey))
 for phrase in result:
-    print("("+phrase['word']+","+phrase['tags']['POS']['item1']+") ")
+    print(f"({phrase['Word']},{phrase['Tags']['POS']['Item1']}) ")
 ''' result:
 (احمد,N)
 (و,CON)
@@ -198,7 +217,7 @@ url =  baseUrl + "NamedEntityRecognition/Detect"
 payload = u'"احمد عباسی به تحصیلات خود در دانشگاه آزاد اسلامی در مشهد ادامه داد"'
 result = json.loads(callApi(url, payload, tokenKey))
 for phrase in result:
-    print("("+phrase['word']+","+phrase['tags']['NER']['item1']+") ")
+    print(f"({phrase['Word']},{phrase['Tags']['NER']['Item1']}) ")
 ''' result:
 {احمد,B-PER}
 {عباسی,I-PER}
@@ -420,20 +439,24 @@ for list in result:
 
 ######################## Call Virastar ############################
 url =  baseUrl + "Virastar/ScanText"
-payload = u'{"text": "حتما آن ها مومن را احترام مے ڪنند. یگ بپنجره ی بزگ وسبز باز میشود . !حضور تان را کرامی می داشتم", "returnOnlyChangedTokens": false}'
-result = json.loads(callApi(url, payload, tokenKey))
+payload = {"text": "حتما آن ها مومن را احترام مے ڪنند. یگ بپنجره ی بزگ وسبز باز میشود . !حضور تان را کرامی می داشتم", 
+           "returnOnlyChangedTokens": False}
+result = json.loads(callApiJsonParam(url, payload, tokenKey))
 output = ''
 for token in result:
-    output += token['originalText']
-    if (token['isChanged']):
-        output += "{" + token['editList'][0]['suggestedText'] + "(" + token['editList'][0]['description'] + ")"
-        if(len(token['editList']) > 1):
-            iterEdit = iter(token['editList'])
-            next(iterEdit)
-            for edit in iterEdit:
-                output += " - " + edit['suggestedText'] + "(" + edit['description'] + ")"
-        output += "}"
+    output += token['OriginalText']
+    if (token['IsChanged']):
+        output += '{' + ' - '.join([f"{edit['SuggestedText']}({edit['Description']})" for edit in token['EditList']]) + '}'        
 print(output)
 ''' result:
 حتما{حتماً(اصلاح تنوین)} آن ها{آن‌ها(اصلاح پسوند)} مومن{مؤمن(اصلاح حروف دارای همزه)} را احترام مے ڪنند{می‌کنند(اصلاح پیشوند، اصلاحات نویسه‌ها)}. یگ{یک(اصلاح اشتباه تایپی/املائی رایج)} بپنجره ی{بپنجره‌ی(اصلاح پسوند) - به پنجره‌ی(جداسازی واژه‌های بهم چسبیده)} بزگ{بزرگ(اصلاح اشتباه تایپی/املائی رایج)} وسبز{و سبز(جداسازی واژه‌های بهم چسبیده)} باز میشود{می‌شود(اصلاح پیشوند)} . !{.! (اصلاح فاصله‌گذاری مطابق دستور زبان)}حضور تان{حضورتان(پیشنهاد پیوسته‌نویسی واژه‌های چندبخشی)} را کرامی{کرمی(این واژه از نظر لغوی مشابه «کرمی» است. (با میزان فاصلۀ: 1)) - رامی(این واژه از نظر لغوی مشابه «رامی» است. (با میزان فاصلۀ: 0.98)) - گرامی(این واژه از نظر لغوی مشابه «گرامی» است. (با میزان فاصلۀ: 0.75))} می داشتم{می‌داشتم(اصلاح پیشوند)}
 '''
+######################## Call Virastar ############################
+url =  baseUrl + "Virastar/PunctuationRestoration"
+payload = {"text": u'''درادامه این مطلب آمده است دولت بایدن که در پشت سرفصل‌های اخبار اوکراین پنهان شده بود حالا یک گام نگران‌کننده به جنگ با ایران نزدیک‌تر شد به گزارش کانال ۱۳ اسرائیل، ایالات متحده با شرکت در رزمایش بزرگ اسرائیل برای شبیه سازی حمله به تاسیسات هسته‌ای ایران در اواخر این ماه موافقت کرده است تایمز اسرائیل خاطرنشان کرد که این گزارش بدون منبع است اما به گفته اکسیوس مقامات اسرائیلی تأیید کردند که ایالات متحده مشارکت خواهد کرد و پنتاگون به درخواست اکسیوس برای اظهار نظر بلافاصله پاسخ نداد'''}
+print(callApiJsonParam(url, payload, tokenKey))
+''' result:
+
+'''
+
+print("Finished 🙏")
