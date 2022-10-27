@@ -44,7 +44,7 @@ def callApiJsonParam(url, data, tokenKey):
 ##################### Get Token by Api Key ##########################
 baseUrl = "http://api.text-mining.ir/api/"
 url = baseUrl + "Token/GetToken"
-querystring = {"apikey":"YOUR_API_KEY"}
+querystring = {"apikey":"YOUR_API_KEY"}  # replace YOUR_API_KEY
 response = requests.request("GET", url, params=querystring)
 data = json.loads(response.text)
 tokenKey = data['token']
@@ -245,6 +245,22 @@ url =  baseUrl + "SentimentAnalyzer/SentimentClassifier2" # output:  0:Negative 
 payload = u"\"اصلا خوب نبود\""
 print(callApi(url, payload, tokenKey)) 
 # result: 0
+
+################# Call Document Similarity #####################
+url =  baseUrl + "TextSimilarity/DocumentSimilarity"
+payload = {
+  "Document1": "کمک بشر دوستانه",
+  "Document2": "یاری انسانها",
+  "UseStemming": True,
+  "UseSynonyms": True,
+  "UseStatisticalSimilarity": True,
+  "UseSpaceCorrection": True,
+  "UseSpellChecker": False
+}
+print(callApiJsonParam(url, payload, tokenKey))
+''' result:
+0.78
+'''
 
 ###################### Call Text Similarity #########################
 url =  baseUrl + "TextSimilarity/ExtractSynonyms"
